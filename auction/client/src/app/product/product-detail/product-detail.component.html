@@ -1,0 +1,72 @@
+<div class="wrapper"
+     ngClass.lt-md="wrapper--lt-md"
+     ngClass.gt-md="wrapper--gt-md"
+     fxLayout="row"
+     fxLayoutAlign="center"
+     fxLayout.xs="column"
+     fxLayoutAlign.xs="center center">
+
+  <div fxFlex="50%">
+    <img class="thumbnail"
+         [attr.alt]="product.title"
+         [attr.src]="urlFor(product)">
+  </div>
+
+  <div fxFlex="50%" *ngIf="latestBids$ | async as price">
+    <div class="info">
+      <h1 class="info__title">{{ product?.title }}</h1>
+      <div class="info__description">{{ product?.description }}
+        <p><nga-stars [rating]="product?.rating"></nga-stars></p>
+
+      </div>
+      <div class="info__bid">
+        <span>
+          <span class="info__bid-value"
+                ngClass.lt-md="info__bid-value--lt-md">{{ price | currency:'USD':'symbol':'.0' }}</span>
+          <span class="info__bid-value-decimal"
+                ngClass.lt-md="info__bid-value-decimal--lt-md">.00</span>
+        </span>
+        <span class="info__bid-label">LAST BID</span>
+      </div>
+
+      <button class="info__bid-button"
+              mat-raised-button
+              color="accent"
+              (click)="placeBid(price + 5)">
+        PLACE BID {{ (price + 5) | currency:'USD':'symbol':'.0' }}
+      </button>
+
+      <div class="well" id="reviews-anchor">
+        <div class="row">
+          <div class="col-md-12"></div>
+        </div>
+        <div  style="margin-top: 50px; " class="info__bid-button">
+          <button (click)="isReviewHidden = !isReviewHidden"
+                  mat-raised-button
+                  color="warn"
+          >Leave a Review</button>
+        </div>
+
+        <div [hidden]="isReviewHidden">
+          <div><nga-stars [(rating)]="newRating" [readonly]="false" class="large"></nga-stars></div>
+          <div><textarea [(ngModel)]="newComment"></textarea></div>
+          <div><button (click)="addReview()" mat-raised-button
+                       color="accent">Add review</button></div>
+        </div>
+
+        <div class="row" *ngFor="let review of reviews">
+          <hr>
+          <div class="col-md-12">
+            <nga-stars [rating]="review.rating"></nga-stars>
+            <span>{{ review.user }}</span>
+            <br>
+            <span class="pull-right">{{ review.timestamp | date: 'shortDate' }}</span>
+            <p>{{ review.comment }}</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
